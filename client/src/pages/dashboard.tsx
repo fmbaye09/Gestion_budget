@@ -1,13 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import StatsCard from "@/components/dashboard/stats-card";
-import { DollarSign, CheckCircle, ArrowUp, ArrowDown, Edit } from "lucide-react";
+import { DollarSign, CheckCircle, ArrowUp, ArrowDown, Edit, Send } from "lucide-react";
 
 export default function Dashboard() {
   const currentYear = new Date().getFullYear();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: budgetSummary } = useQuery({
     queryKey: ["/api/budget-analysis/summary", currentYear],
@@ -45,6 +48,40 @@ export default function Dashboard() {
     ) : (
       <Badge className="bg-red-100 text-red-800">Dépense</Badge>
     );
+  };
+
+  const submitLineMutation = useMutation({
+    mutationFn: async (lineId: number) => {
+      const response = await fetch(`/api/budget-lines/${lineId}/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Erreur lors de la soumission");
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Ligne soumise",
+        description: "La ligne budgétaire a été soumise pour validation",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/budget-lines"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmitLine = (lineId: number) => {
+    submitLineMutation.mutate(lineId);
   };
 
   return (
@@ -186,9 +223,22 @@ export default function Dashboard() {
                     </td>
                     <td className="p-4">{getStatusBadge(line.status)}</td>
                     <td className="p-4">
-                      <Button variant="ghost" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        {line.status === "draft" && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleSubmitLine(line.id)}
+                            disabled={submitLineMutation.isPending}
+                          >
+                            <Send className="h-4 w-4 mr-1" />
+                            Soumettre
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

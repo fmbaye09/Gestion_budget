@@ -306,6 +306,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route pour soumettre une ligne budgétaire pour validation
+  app.post("/api/budget-lines/:id/submit", requireAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      const existingLine = await storage.getBudgetLine(id);
+      if (!existingLine) {
+        return res.status(404).json({ message: "Budget line not found" });
+      }
+      
+      // Check permissions - only owners can submit their own lines
+      const user = await storage.getUser(req.session.userId!);
+      if (user?.role === "user" && existingLine.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      // Only draft lines can be submitted
+      if (existingLine.status !== "draft") {
+        return res.status(400).json({ message: "Only draft lines can be submitted" });
+      }
+      
+      const updatedLine = await storage.updateBudgetLine(id, { status: "pending" });
+      
+      // Create history entry
+      await storage.createBudgetHistory({
+        budgetLineId: id,
+        action: "submitted",
+        oldValues: JSON.stringify({ status: "draft" }),
+        newValues: JSON.stringify({ status: "pending" }),
+        userId: req.session.userId!
+      });
+      
+      res.json(updatedLine);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to submit budget line" });
+    }
+  });
+
   app.post("/api/consolidation/validate/:id", requireRole(["chef_dept", "direction", "comptable"]), async (req, res) => {
     try {
       const id = parseInt(req.params.id);
