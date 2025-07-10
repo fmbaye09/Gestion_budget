@@ -2,7 +2,7 @@
 
 ## Overview
 
-Ce système de gestion budgétaire est conçu pour l'Université Cheikh Anta Diop (UCAD) et l'École Supérieure Polytechnique (ESP). Il automatise la consolidation budgétaire depuis les besoins départementaux jusqu'à une proposition de budget complète, suivant la méthodologie Unified Process (UP).
+Ce système de gestion budgétaire est conçu pour l'Université Cheikh Anta Diop (UCAD) et l'École Supérieure Polytechnique (ESP).
 
 ## Fonctionnalités Principales
 
@@ -137,33 +137,3 @@ L'application sera accessible sur `http://localhost:5000`
 - Validation des données avec Zod
 - Protection contre l'injection SQL via Drizzle ORM
 
-## Développement avec Unified Process
-
-Ce projet suit la méthodologie UP avec documentation complète des 4 phases :
-
-1. **Inception** : Définition du périmètre et des exigences
-2. **Elaboration** : Architecture et analyse des risques
-3. **Construction** : Développement itératif
-4. **Transition** : Déploiement et maintenance
-
-## Contribution
-
-Pour contribuer au projet :
-
-1. Forkez le dépôt
-2. Créez une branche feature (`git checkout -b feature/nom-fonctionnalite`)
-3. Committez vos changements (`git commit -m 'Ajout nouvelle fonctionnalité'`)
-4. Poussez vers la branche (`git push origin feature/nom-fonctionnalite`)
-5. Ouvrez une Pull Request
-
-## License
-
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-
-## Support
-
-Pour toute question ou problème, veuillez ouvrir une issue sur GitHub ou contacter l'équipe de développement.
-
----
-
-**Développé avec ❤️ pour l'UCAD/ESP**
