@@ -108,7 +108,19 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBudgetLines(filters?: { year?: number; userId?: number; status?: string }): Promise<BudgetLineWithDetails[]> {
-    let query = db
+    let whereConditions: any[] = [];
+    
+    if (filters?.year) {
+      whereConditions.push(eq(budgetLines.year, filters.year));
+    }
+    if (filters?.userId) {
+      whereConditions.push(eq(budgetLines.userId, filters.userId));
+    }
+    if (filters?.status) {
+      whereConditions.push(eq(budgetLines.status, filters.status as any));
+    }
+
+    const query = db
       .select({
         id: budgetLines.id,
         userId: budgetLines.userId,
@@ -140,17 +152,8 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(users, eq(budgetLines.userId, users.id))
       .leftJoin(budgetCategories, eq(budgetLines.categoryId, budgetCategories.id))
       .leftJoin(sql`users as validator`, sql`budget_lines.validated_by = validator.id`)
+      .where(whereConditions.length > 0 ? and(...whereConditions) : undefined)
       .orderBy(desc(budgetLines.createdAt));
-
-    if (filters?.year) {
-      query = query.where(eq(budgetLines.year, filters.year));
-    }
-    if (filters?.userId) {
-      query = query.where(eq(budgetLines.userId, filters.userId));
-    }
-    if (filters?.status) {
-      query = query.where(eq(budgetLines.status, filters.status as any));
-    }
 
     return await query as any;
   }
@@ -209,7 +212,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBudgetLine(id: number): Promise<boolean> {
     const result = await db.delete(budgetLines).where(eq(budgetLines.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 
   async getBudgetSummary(year: number): Promise<{
@@ -268,8 +271,8 @@ export class DatabaseStorage implements IStorage {
       const variancePercent = row.proposed > 0 ? (variance / row.proposed) * 100 : 0;
       
       return {
-        categoryCode: row.categoryCode,
-        categoryLabel: row.categoryLabel,
+        categoryCode: row.categoryCode || '',
+        categoryLabel: row.categoryLabel || '',
         proposed: row.proposed || 0,
         realized: row.realized || 0,
         variance,
@@ -296,18 +299,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBudgetReports(userId?: number): Promise<BudgetReport[]> {
-    let query = db.select().from(budgetReports).orderBy(desc(budgetReports.createdAt));
-    
     if (userId) {
-      query = query.where(eq(budgetReports.userId, userId));
+      return await db
+        .select()
+        .from(budgetReports)
+        .where(eq(budgetReports.userId, userId))
+        .orderBy(desc(budgetReports.createdAt));
     }
     
-    return await query;
+    return await db
+      .select()
+      .from(budgetReports)
+      .orderBy(desc(budgetReports.createdAt));
   }
 
   async deleteBudgetReport(id: number): Promise<boolean> {
     const result = await db.delete(budgetReports).where(eq(budgetReports.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
   }
 }
 
