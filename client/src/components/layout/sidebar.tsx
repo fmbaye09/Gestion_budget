@@ -16,14 +16,18 @@ import {
   LogOut
 } from "lucide-react";
 
-const navigation = [
-  { name: "Tableau de Bord", href: "/", icon: BarChart3 },
-  { name: "Saisie des Besoins", href: "/budget-entry", icon: PlusCircle },
-  { name: "Consolidation", href: "/consolidation", icon: Layers },
-  { name: "Analyse & Écarts", href: "/analysis", icon: TrendingUp },
-  { name: "Rapports", href: "/reports", icon: FileText },
-  { name: "Historique", href: "/history", icon: History },
-];
+const getNavigationForRole = (role: string) => {
+  const baseNavigation = [
+    { name: "Tableau de Bord", href: "/", icon: BarChart3, roles: ["user", "chef_dept", "direction", "comptable"] },
+    { name: "Saisie des Besoins", href: "/budget-entry", icon: PlusCircle, roles: ["user", "chef_dept", "direction"] },
+    { name: "Consolidation", href: "/consolidation", icon: Layers, roles: ["chef_dept", "direction"] },
+    { name: "Analyse & Écarts", href: "/analysis", icon: TrendingUp, roles: ["chef_dept", "direction", "comptable"] },
+    { name: "Rapports", href: "/reports", icon: FileText, roles: ["chef_dept", "direction", "comptable"] },
+    { name: "Historique", href: "/history", icon: History, roles: ["chef_dept", "direction", "comptable"] },
+  ];
+
+  return baseNavigation.filter(item => item.roles.includes(role));
+};
 
 export default function Sidebar() {
   const [location] = useLocation();
@@ -86,18 +90,18 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
-        {navigation.map((item) => {
+        {getNavigationForRole(auth?.user?.role || "user").map((item) => {
           const isActive = location === item.href;
           return (
             <Link key={item.name} href={item.href}>
-              <a
-                className={`flex items-center p-3 rounded-lg text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-200 ${
+              <div
+                className={`flex items-center p-3 rounded-lg text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-200 cursor-pointer ${
                   isActive ? "bg-blue-600 text-white" : ""
                 }`}
               >
                 <item.icon className="w-5 h-5 mr-3" />
                 <span>{item.name}</span>
-              </a>
+              </div>
             </Link>
           );
         })}
