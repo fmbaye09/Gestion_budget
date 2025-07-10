@@ -90,10 +90,29 @@ export default function Consolidation() {
   };
 
   const handleValidate = (line: any, approved: boolean) => {
-    setValidationDialog({ open: true, lineId: line.id, line });
     if (approved) {
       // Auto-validate if approved
       validateLineMutation.mutate({ lineId: line.id, approved: true });
+    } else {
+      // Open dialog for rejection
+      setValidationDialog({ open: true, lineId: line.id, line });
+    }
+  };
+
+  const handleBulkValidate = () => {
+    if (selectedLines.length > 0) {
+      selectedLines.forEach(lineId => {
+        validateLineMutation.mutate({ lineId, approved: true });
+      });
+      setSelectedLines([]);
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedLines(pendingLines?.map((line: any) => line.id) || []);
+    } else {
+      setSelectedLines([]);
     }
   };
 
@@ -148,11 +167,15 @@ export default function Consolidation() {
               <Button
                 className="bg-green-600 hover:bg-green-700"
                 disabled={selectedLines.length === 0}
+                onClick={handleBulkValidate}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Tout Valider
+                Tout Valider ({selectedLines.length})
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => toast({
+                title: "Prévisualisation",
+                description: "Fonctionnalité de prévisualisation en développement",
+              })}>
                 <Eye className="w-4 h-4 mr-2" />
                 Prévisualiser
               </Button>
@@ -165,7 +188,10 @@ export default function Consolidation() {
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-4">
-                    <Checkbox />
+                    <Checkbox 
+                      checked={selectedLines.length === pendingLines?.length && pendingLines?.length > 0}
+                      onCheckedChange={handleSelectAll}
+                    />
                   </th>
                   <th className="text-left p-4 text-sm font-medium text-gray-900">Code</th>
                   <th className="text-left p-4 text-sm font-medium text-gray-900">Libellé</th>
@@ -207,6 +233,10 @@ export default function Consolidation() {
                           size="sm"
                           variant="ghost"
                           className="text-blue-600 hover:text-blue-700"
+                          onClick={() => toast({
+                            title: "Édition",
+                            description: "Fonctionnalité d'édition en développement",
+                          })}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>

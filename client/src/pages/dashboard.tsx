@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import StatsCard from "@/components/dashboard/stats-card";
 import { DollarSign, CheckCircle, ArrowUp, ArrowDown, Edit, Send } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function Dashboard() {
   const currentYear = new Date().getFullYear();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, navigate] = useLocation();
 
   const { data: budgetSummary } = useQuery({
     queryKey: ["/api/budget-analysis/summary", currentYear],
@@ -194,7 +196,7 @@ export default function Dashboard() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Lignes Budgétaires Récentes</CardTitle>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => navigate("/history")}>
               Voir tout
             </Button>
           </div>
@@ -224,7 +226,7 @@ export default function Dashboard() {
                     <td className="p-4">{getStatusBadge(line.status)}</td>
                     <td className="p-4">
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" onClick={() => navigate(`/budget-edit/${line.id}`)}>
                           <Edit className="h-4 w-4" />
                         </Button>
                         {line.status === "draft" && (

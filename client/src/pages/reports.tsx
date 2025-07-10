@@ -97,12 +97,12 @@ export default function Reports() {
     if (includeDepenses) sections.push("depenses");
     if (includeAnalysis) sections.push("analysis");
     if (includeDetails) sections.push("details");
-
+    
     generateReportMutation.mutate({
       year: selectedYear,
       type: selectedType,
       format: "excel",
-      sections,
+      sections
     });
   };
 
@@ -112,12 +112,12 @@ export default function Reports() {
     if (includeDepenses) sections.push("depenses");
     if (includeAnalysis) sections.push("analysis");
     if (includeDetails) sections.push("details");
-
+    
     generateReportMutation.mutate({
       year: selectedYear,
       type: selectedType,
       format: "pdf",
-      sections,
+      sections
     });
   };
 
@@ -235,9 +235,10 @@ export default function Reports() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="2025">Budget 2025</SelectItem>
                   <SelectItem value="2024">Budget 2024</SelectItem>
                   <SelectItem value="2023">Budget 2023</SelectItem>
-                  <SelectItem value="comparison">Comparaison 2023-2024</SelectItem>
+                  <SelectItem value="comparison">Comparaison 2024-2025</SelectItem>
                 </SelectContent>
               </Select>
             </div>

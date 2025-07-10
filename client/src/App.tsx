@@ -9,6 +9,7 @@ import LoginPage from "./pages/login";
 import MainLayout from "./components/layout/main-layout";
 import Dashboard from "./pages/dashboard";
 import BudgetEntry from "./pages/budget-entry";
+import BudgetEdit from "./pages/budget-edit";
 import Consolidation from "./pages/consolidation";
 import Analysis from "./pages/analysis";
 import Reports from "./pages/reports";
@@ -44,6 +45,7 @@ function Router() {
         <Switch>
           <Route path="/" component={Dashboard} />
           <Route path="/budget-entry" component={BudgetEntry} />
+          <Route path="/budget-edit/:id" component={BudgetEdit} />
           <Route path="/consolidation" component={Consolidation} />
           <Route path="/analysis" component={Analysis} />
           <Route path="/reports" component={Reports} />

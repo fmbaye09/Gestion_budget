@@ -21,10 +21,14 @@ const loginSchema = z.object({
 });
 
 const updateBudgetLineSchema = z.object({
+  categoryId: z.number().optional(),
+  proposedAmount: z.string().optional(),
+  realizedAmount: z.string().optional(),
+  year: z.number().optional(),
+  description: z.string().optional(),
   status: z.enum(["draft", "pending", "validated", "rejected", "consolidated"]).optional(),
   validatedBy: z.number().optional(),
   rejectionReason: z.string().optional(),
-  realizedAmount: z.string().optional(),
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -403,6 +407,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(report);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate report" });
+    }
+  });
+
+  app.delete("/api/reports/:id", requireAuth, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const deleted = await storage.deleteBudgetReport(id);
+      
+      if (deleted) {
+        res.json({ message: "Report deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Report not found" });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete report" });
     }
   });
 

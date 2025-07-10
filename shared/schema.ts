@@ -109,6 +109,10 @@ export const insertBudgetLineSchema = createInsertSchema(budgetLines).omit({
   updatedAt: true,
 });
 
+export const updateBudgetLineSchema = insertBudgetLineSchema.partial().omit({
+  userId: true,
+});
+
 export const insertBudgetHistorySchema = createInsertSchema(budgetHistory).omit({
   id: true,
   createdAt: true,

@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Filter, Calendar, TrendingUp, TrendingDown } from "lucide-react";
+import { Search, Filter, Calendar, TrendingUp, TrendingDown, Eye, Edit } from "lucide-react";
 
 export default function History() {
   const [selectedYear, setSelectedYear] = useState("all");
