@@ -1,0 +1,108 @@
+🧱 PHASE 2 – ÉLABORATION
+Objectif : définir l’architecture du système, affiner les besoins, préparer le terrain pour le développement technique.
+________________________________________
+✅ 1. Objectifs de la phase
+•	Consolider les besoins fonctionnels (au moins 80 % des cas d’utilisation)
+•	Définir l’architecture logicielle
+•	Préciser les rôles, interfaces, priorités
+•	Planifier la phase de construction
+•	Valider la faisabilité technique
+•	Identifier les composants critiques
+________________________________________
+📌 2. Besoins fonctionnels détaillés
+Code	Fonctionnalité	Description
+F01	Saisie des besoins	L’utilisateur saisit les besoins budgétaires (recettes/dépenses) selon la nomenclature
+F02	Accès au budget passé	Permet de consulter les budgets précédents (proposé et réalisé)
+F03	Calcul des écarts	Calcul automatique des variations en valeur et en %
+F04	Consolidation départementale	Le chef de département fusionne les besoins de ses services
+F05	Modification direction	Le directeur peut corriger ou ajuster les lignes budgétaires
+F06	Génération automatique du projet de budget	Exporte le fichier final (Excel ou PDF)
+F07	Tableau de bord des écarts	Affiche clairement les manques/écarts par service ou rubrique
+________________________________________
+👥 3. Rôles système + flux
+Rôle	Droits
+Utilisateur simple	Saisie des besoins
+Chef de département	Validation / Consolidation
+Direction	Révision / Édition finale
+Comptable / Audit	Lecture / Analyse
+Développeur	Accès technique global
+________________________________________
+⚙️ 4. Architecture technique proposée
+🧱 Architecture 3 couches
+1.	Front-end (interface utilisateur)
+o	Technologies : HTML, CSS, JavaScript, Bootstrap
+o	Alternatives plus puissantes : Vue.js ou React
+o	Interface responsive simple
+2.	Back-end (logique métier & API)
+o	Framework : Python Flask ou Django
+o	Fonctions : traitement des saisies, calcul des écarts, génération de fichier, autorisations
+3.	Base de données
+o	PostgreSQL ou SQLite
+o	Tables principales :
+	users
+	departments
+	budget_lines
+	budget_history
+	roles
+	rubriques_nomenclature
+4.	Fichiers générés
+o	Export Excel ou PDF
+o	Génération avec openpyxl ou pandas côté back-end
+________________________________________
+🗂️ 5. Modèle de données simplifié
+Table budget_lines
+id
+department_id
+rubrique_code
+rubrique_label
+type (recette/dépense)
+montant_propose
+montant_realise
+année
+user_id
+Table users
+id
+nom
+email
+mot_de_passe
+role_id
+Table roles
+id
+nom (utilisateur, chef, directeur, etc.)
+Table rubriques_nomenclature
+code
+libellé
+type (recette/dépense)
+________________________________________
+📅 6. Planification indicative de la phase suivante (Construction)
+Étape	Durée estimée	Livrable attendu
+Création de la base de données	2 jours	Modèle de données fonctionnel
+Développement de l’interface de saisie	3-5 jours	Formulaire connecté
+Gestion des profils utilisateurs	2 jours	Authentification, rôles
+Calcul automatique des écarts	1 jour	Vue des résultats
+Génération du fichier final	2 jours	Fichier Excel / PDF
+Tableau de bord direction	2 jours	Vue globale, écarts, statistiques
+________________________________________
+📤 7. Livrables à produire dans cette phase
+•	Diagramme de classes UML 📘 
+… (à faire)
+•	Maquette des interfaces 🎨
+ 
+ 
+ 
+ 
+ 
+ 
+•	Modèle de données (format SQL)
+ 
+•	Spécifications techniques détaillées
+Composant	Technologie possible
+Frontend	HTML/CSS/Bootstrap + JS (ou React)
+Backend	Python (Flask ou Django)
+Base de données	PostgreSQL ou SQLite
+Export	openpyxl, reportlab (PDF)
+Authentification	JWT ou sessions classiques
+
+•	Cas d’utilisation UML (avec acteurs et flux)
+… (à dessiner)
+
